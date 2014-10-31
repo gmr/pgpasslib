@@ -1,14 +1,14 @@
 import setuptools
 
-setuptools.setup(name='pgpass',
+setuptools.setup(name='pgpasslib',
                  version='0.1.0',
                  description='Library for getting passwords from pgpass files',
                  long_description=open('README.rst').read(),
                  author='Gavin M. Roy',
                  author_email='gavinmroy@gmail.com',
                  keywords='postgresql schema',
-                 url='http://pgpass.readthedocs.org',
-                 py_modules=['pgpass'],
+                 url='http://pgpasslib.readthedocs.org',
+                 py_modules=['pgpasslib'],
                  package_data={'': ['LICENSE', 'README.rst']},
                  include_package_data=True,
                  license=open('LICENSE').read(),
