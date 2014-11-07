@@ -1,0 +1,24 @@
+language: python
+python:
+    - 2.6
+    - 2.7
+    - pypy
+    - 3.2
+    - 3.3
+    - 3.4
+install:
+    - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install unittest2; fi
+    - "pip install -r test-requirements.txt"
+script: nosetests --with-coverage --cover-package=pgpasslib
+after_success:
+  - coveralls
+deploy:
+  distributions: sdist bdist_wheel
+  provider: pypi
+  user: crad
+  on:
+    python: 2.7
+    tags: true
+    all_branches: true
+  password:
+    secure: "BTi9gKs7Dqnp2Av18BQ17H4Na8yCY5UNlZVoIUGxmJ7NeiLbpuzly0FLbMyn31UELKZjo3k6IZXPron4srttGKFCoHPcrbhIe5GJlox5wo2uzXzM57g6wBQHy6Zop9d/G8fPFvyNqSa4OqvotdwKHVhGaiv6Fod7/kn4aJLv/6w="

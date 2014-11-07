@@ -1,6 +1,6 @@
-"""
-Attempt to return the password for the specified host, port, database name,
-and username from the PostgreSQL Password file.
+""":py:meth:`pgpasslib.getpass` will attempt to return the password for the
+specified host, port, database name, and username from the PostgreSQL Password
+file.
 
 The password file from the ``.pgpass`` file in the current user's home
 directory or as specified by the ``PGPASSFILE`` environment variable
@@ -22,8 +22,16 @@ import os
 from os import path
 import re
 import stat
+import sys
+
+__version__ = '1.0.0'
 
 LOGGER = logging.getLogger(__name__)
+
+PYTHON3 = True if sys.version_info > (3, 0, 0) else False
+
+if PYTHON3:  # pragma: no cover
+    unicode = bytes
 
 DEFAULT_HOST = 'localhost'
 DEFAULT_PORT = 5432
@@ -36,8 +44,8 @@ PATTERN = re.compile(r'^(.*):(.*):(.*):(.*):(.*)$', re.MULTILINE)
 def getpass(host=DEFAULT_HOST, port=DEFAULT_PORT, dbname=DEFAULT_DBNAME,
             user=DEFAULT_USER):
     """Return the password for the specified host, port, dbname and user.
-    Returns ``None`` if a password can not be found for the specified
-    connection parameters.
+    :py:const:`None` will be returned if a password can not be found for the
+    specified  connection parameters.
 
     If the password file can not be located, a :py:class:`FileNotFound`
     exception will be raised.
@@ -50,10 +58,11 @@ def getpass(host=DEFAULT_HOST, port=DEFAULT_PORT, dbname=DEFAULT_DBNAME,
     :py:class:`InvalidPermissions` exception will be raised.
 
     :param str host: PostgreSQL hostname
-    :param int port: PostgreSQL port
+    :param port: PostgreSQL port
+    :type port: int or str
     :param str dbname: Database name
     :param str user: Database role/user
-    :return: str|None
+    :rtype: str
     :raises: FileNotFound
     :raises: InvalidPermissions
     :raises: InvalidEntry
@@ -72,7 +81,7 @@ class FileNotFound(Exception):
     variable or ``.pgpass`` file in the user's home directory does not exist.
 
     """
-    def __repr__(self):
+    def __str__(self):
         return 'No such file "{0}"'.format(self.args[0])
 
 
@@ -92,9 +101,9 @@ class InvalidPermissions(Exception):
     world readable permission bits set.
 
     """
-    def __repr__(self):
-        return 'Invalid Permissions for {0}: {1}"'.format(self.args[0],
-                                                          self.args[1])
+    def __str__(self):
+        return 'Invalid Permissions for {0}: {1}'.format(self.args[0],
+                                                         self.args[1])
 
 
 class _Entry(object):
@@ -103,7 +112,8 @@ class _Entry(object):
     vaues.
 
     :param str host: The hostname or path to the Unix Socket
-    :param int port: The port
+    :param port: The port
+    :type port: int or str
     :param str dbname: The database name
     :param str user: The user or role name
     :param str password: The password
@@ -138,8 +148,9 @@ class _Entry(object):
     def _sanitize_port(value):
         """Make sure the port is either an integer or ``*``.
 
-        :param int|str value: The port value to sanitize
-        :rtype: int|str
+        :param value: The port value to sanitize
+        :type value: int or str
+        :rtype: int or str
         :raises: InvalidEntry
 
         """
@@ -164,7 +175,7 @@ class _Entry(object):
         :raises: InvalidEntry
 
         """
-        if not isinstance(value, basestring):
+        if not isinstance(value, (bytes, str, unicode)):
             raise InvalidEntry(name, value)
         return value.replace('\:', ':')
 
@@ -179,8 +190,7 @@ def _file_path():
     :raises: InvalidPermissions
 
     """
-    file_path = os.getenv('PGPASSFILE',
-                          path.join(path.expanduser('~'), '.pgpass'))
+    file_path = os.environ.get('PGPASSFILE', _default_path())
     if not path.exists(file_path):
         raise FileNotFound(file_path)
 
@@ -190,6 +200,15 @@ def _file_path():
         raise InvalidPermissions(file_path, oct(stat.S_IMODE(s.st_mode)))
 
     return file_path
+
+
+def _default_path():
+    """Return the default path of .pgpass in the current user's home directory
+
+    :rtype: str
+
+    """
+    return path.join(path.expanduser('~'), '.pgpass')
 
 
 def _get_entries():
