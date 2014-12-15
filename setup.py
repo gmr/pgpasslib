@@ -17,7 +17,7 @@ classifiers = ['Development Status :: 5 - Production/Stable',
                'Topic :: Software Development :: Libraries']
 
 setuptools.setup(name='pgpasslib',
-                 version='1.0.0',
+                 version='1.0.1',
                  description='Library for getting passwords from PostgreSQL '
                              'password files',
                  long_description=open('README.rst').read(),

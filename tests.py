@@ -16,8 +16,15 @@ import pgpasslib
 
 
 MOCK_CONTENT = """\
+# This is a test entry
 localhost:5432:*:kermit:
+
+# Old entry
+# bouncer:6000:*:rubber:buggy
+
 bouncer:6000:*:rubber:buggy
+
+# Another Test
 foo.abjdite.us-east-1.redshift.amazonaws.com:5439:*:fonzy:b3ar
 foo\:bar:6000:*:baz:qux
 """

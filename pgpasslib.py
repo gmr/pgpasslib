@@ -24,7 +24,7 @@ import re
 import stat
 import sys
 
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 LOGGER = logging.getLogger(__name__)
 
@@ -221,7 +221,7 @@ def _get_entries():
     entries = list()
     matches = PATTERN.findall(_read_file())
     for match in matches:
-        if match:
+        if match and not match[0].startswith("#"):
             entries.append(_Entry(*match))
     return entries
 
