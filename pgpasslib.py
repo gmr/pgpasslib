@@ -16,7 +16,7 @@ Example:
         raise ValueError('Did not find a password in the .pgpass file')
 
 """
-import getpass
+import getpass as stdlib_getpass
 import logging
 import os
 from os import path
@@ -24,7 +24,7 @@ import re
 import stat
 import sys
 
-__version__ = '1.0.1'
+__version__ = '1.0.2'
 
 LOGGER = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ if PYTHON3:  # pragma: no cover
 
 DEFAULT_HOST = 'localhost'
 DEFAULT_PORT = 5432
-DEFAULT_USER = getpass.getuser()
+DEFAULT_USER = stdlib_getpass.getuser()
 DEFAULT_DBNAME = DEFAULT_USER
 
 PATTERN = re.compile(r'^(.*):(.*):(.*):(.*):(.*)$', re.MULTILINE)
