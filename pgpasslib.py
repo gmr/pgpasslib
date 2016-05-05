@@ -4,6 +4,7 @@ file.
 
 The password file from the ``.pgpass`` file in the current user's home
 directory or as specified by the ``PGPASSFILE`` environment variable
+or on Windows the pgpass.conf file in the %APPDATA%\postgresql folder
 
 Example:
 
@@ -23,6 +24,8 @@ from os import path
 import re
 import stat
 import sys
+import platform
+
 
 __version__ = '1.0.2'
 
@@ -194,10 +197,13 @@ def _file_path():
     if not path.exists(file_path):
         raise FileNotFound(file_path)
 
-    s = os.stat(file_path)
-    if ((s.st_mode & stat.S_IRGRP == stat.S_IRGRP) or
-        (s.st_mode & stat.S_IRGRP == stat.S_IROTH)):
-        raise InvalidPermissions(file_path, oct(stat.S_IMODE(s.st_mode)))
+    #On Microsoft Windows, it is assumed that the file is stored in a directory
+    #that is secure, so no special permissions check is made.
+    if platform.system() != "Windows":
+        s = os.stat(file_path)
+        if ((s.st_mode & stat.S_IRGRP == stat.S_IRGRP) or
+            (s.st_mode & stat.S_IROTH == stat.S_IROTH)):
+            raise InvalidPermissions(file_path, oct(stat.S_IMODE(s.st_mode)))
 
     return file_path
 
@@ -208,6 +214,8 @@ def _default_path():
     :rtype: str
 
     """
+    if platform.system() == "Windows":
+        return path.join(os.getenv("APPDATA"), "postgresql", "pgpass.conf")
     return path.join(path.expanduser('~'), '.pgpass')
 
 
