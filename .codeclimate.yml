@@ -13,3 +13,4 @@ ratings:
   - pgpasslib.py
 exclude_paths:
 - tests.py
+- docs/conf.py
