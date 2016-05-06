@@ -91,8 +91,21 @@ class FilePathInvalidPermissionTest(unittest.TestCase):
         os.environ['PGPASSFILE'] = file_name
         os.chmod(file_name,
                  stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
-        self.assertRaises(pgpasslib.InvalidPermissions,
-                          pgpasslib._file_path)
+        with self.assertRaises(pgpasslib.InvalidPermissions):
+            pgpasslib._file_path()
+        os.remove(file_name)
+
+    def test_invalidpermissions_is_not_raised_on_windows(self):
+        with tempfile.NamedTemporaryFile(delete=False) as file_handle:
+            file_handle.write(b'foo\n')
+            file_name = file_handle.name
+        os.environ['PGPASSFILE'] = file_name
+        os.chmod(file_name,
+                 stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
+        with mock.patch('platform.system') as system:
+            system.return_value = 'Windows'
+            value = pgpasslib._file_path()
+        self.assertEqual(value, file_name)
         os.remove(file_name)
 
 

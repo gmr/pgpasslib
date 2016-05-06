@@ -26,8 +26,7 @@ import stat
 import sys
 import platform
 
-
-__version__ = '1.0.2'
+__version__ = '1.1.0'
 
 LOGGER = logging.getLogger(__name__)
 
@@ -188,6 +187,9 @@ def _file_path():
     the PGPASSFILE environment variable, falling back to ``.pgpass`` in the
     user's home directory.
 
+    On Microsoft Windows, it is assumed that the file is stored in a directory
+    that is secure, so no special permissions check is made.
+
     :return: str
     :raises: FileNotFound
     :raises: InvalidPermissions
@@ -197,9 +199,7 @@ def _file_path():
     if not path.exists(file_path):
         raise FileNotFound(file_path)
 
-    #On Microsoft Windows, it is assumed that the file is stored in a directory
-    #that is secure, so no special permissions check is made.
-    if platform.system() != "Windows":
+    if platform.system() != 'Windows':
         s = os.stat(file_path)
         if ((s.st_mode & stat.S_IRGRP == stat.S_IRGRP) or
             (s.st_mode & stat.S_IROTH == stat.S_IROTH)):
@@ -214,8 +214,10 @@ def _default_path():
     :rtype: str
 
     """
-    if platform.system() == "Windows":
-        return path.join(os.getenv("APPDATA"), "postgresql", "pgpass.conf")
+    if platform.system() == 'Windows':
+        return path.join(os.getenv('APPDATA',
+                                   path.join(path.expanduser('~'), 'AppData')),
+                         'postgresql', 'pgpass.conf')
     return path.join(path.expanduser('~'), '.pgpass')
 
 
