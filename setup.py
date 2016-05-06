@@ -32,5 +32,5 @@ setuptools.setup(name='pgpasslib',
                  py_modules=['pgpasslib'],
                  package_data={'': ['LICENSE', 'README.rst']},
                  include_package_data=True,
-                 license=open('LICENSE').read(),
+                 license='BSD',
                  classifiers=classifiers)
