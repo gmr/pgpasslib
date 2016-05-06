@@ -78,34 +78,37 @@ def getpass(host=DEFAULT_HOST, port=DEFAULT_PORT, dbname=DEFAULT_DBNAME,
     return None
 
 
-class FileNotFound(Exception):
+class PgPassException(Exception):
+    """Base exception for all pgpasslib exceptions"""
+    MESSAGE = 'Base Exception: {}'
+
+    def __str__(self):
+        return self.MESSAGE.format(*self.args)
+
+
+class FileNotFound(PgPassException):
     """Raised when the password file specified in the PGPASSFILE environment
     variable or ``.pgpass`` file in the user's home directory does not exist.
 
     """
-    def __str__(self):
-        return 'No such file "{0}"'.format(self.args[0])
+    MESSAGE = 'No such file "{0}"'
 
 
-class InvalidEntry(Exception):
+class InvalidEntry(PgPassException):
     """Raised when the password file can not be parsed properly due to errors
     in the entry format.
 
     """
-    def __str__(self):
-        return 'Error validating {0} value "{1}"'.format(self.args[0],
-                                                         self.args[1])
+    MESSAGE = 'Error validating {0} value "{1}"'
 
 
-class InvalidPermissions(Exception):
+class InvalidPermissions(PgPassException):
     """Raised when the password file specified in the PGPASSFILE environment
     variable or ``.pgpass`` file in the user's home directory has group or
     world readable permission bits set.
 
     """
-    def __str__(self):
-        return 'Invalid Permissions for {0}: {1}'.format(self.args[0],
-                                                         self.args[1])
+    MESSAGE = 'Invalid Permissions for {0}: {1}'
 
 
 class _Entry(object):
