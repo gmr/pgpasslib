@@ -4,7 +4,7 @@ pgpasslib is a library for retrieving passwords from a PostgreSQL password
 file, either from a location specified in the ``PGPASSFILE`` environment
 variable or in the ``.pgpass`` file in the current user's home directory.
 
-|Version| |Downloads| |License|
+|Version| |Downloads| |PythonVersions|
 
 Installation
 ------------
@@ -49,11 +49,11 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
-.. |Version| image:: https://badge.fury.io/py/pgpasslib.svg?
-   :target: http://badge.fury.io/py/pgpasslib
-
-.. |Downloads| image:: https://pypip.in/d/pgpasslib/badge.svg?
+.. |Version| image:: https://img.shields.io/pypi/v/pgpasslib.svg?
    :target: https://pypi.python.org/pypi/pgpasslib
 
-.. |License| image:: https://pypip.in/license/pgpasslib/badge.svg?
-   :target: https://pgpasslib.readthedocs.org
+.. |PythonVersions| image:: https://img.shields.io/pypi/pyversions/pgpasslib.svg?
+   :target: https://github.com/gmr/pgpasslib
+
+.. |Downloads| image:: https://img.shields.io/pypi/dm/pgpasslib.svg?
+   :target: https://pypi.python.org/pypi/pgpasslib
