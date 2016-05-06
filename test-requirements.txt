@@ -1,4 +1,4 @@
+codecov
 coverage
-coveralls
 mock
 nose
