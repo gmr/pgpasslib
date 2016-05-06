@@ -1,2 +1,15 @@
+engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - python
+  pep8:
+    enabled: true
+  radon:
+    enabled: true
+ratings:
+  paths:
+  - pgpasslib.py
 exclude_paths:
 - tests.py
