@@ -205,7 +205,7 @@ def _file_path():
     if platform.system() != 'Windows':
         s = os.stat(file_path)
         if ((s.st_mode & stat.S_IRGRP == stat.S_IRGRP) or
-            (s.st_mode & stat.S_IROTH == stat.S_IROTH)):
+                (s.st_mode & stat.S_IROTH == stat.S_IROTH)):
             raise InvalidPermissions(file_path, oct(stat.S_IMODE(s.st_mode)))
 
     return file_path
