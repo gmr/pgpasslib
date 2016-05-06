@@ -2,6 +2,7 @@ Version History
 ---------------
 - 1.1.0 [2016-05-05]
  - Add Windows support and fix a permission check bug #2 (David Rader)
+ - Add a new ``pgpasslib.PgPassException`` base exception
 - 1.0.2 [2016-04-19]
  - Fix an inspection error where pgpasslib.getpass is confused for stdlib getpass
 - 1.0.1 [2014-12-15]
