@@ -12,9 +12,9 @@ ratings:
   paths:
   - pgpasslib.py
 exclude_paths:
-- *.txt
 - docs/**
 - setup.*
+- test-requirements.txt
 - tests.py
 - README.rst
 - MANIFEST.in
