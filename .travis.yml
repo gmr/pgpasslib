@@ -12,6 +12,7 @@ install:
 script: nosetests --with-coverage --cover-package=pgpasslib
 after_success:
   - codecov
+  - CODECLIMATE_REPO_TOKEN=e6d7066a48167930bd0b35e039de9fbe6c04643135f0df7cbe67cd3b89560d9f codeclimate-test-reporter
 deploy:
   distributions: sdist bdist_wheel
   provider: pypi
