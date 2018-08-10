@@ -242,11 +242,19 @@ class GetPassMatch4Test(unittest.TestCase):
 
 
 class GetPassNoMatchTest(unittest.TestCase):
-
-    def test_getpass_returns_expected_result(self):
+    def test_path_matches_expectation(self):
         with mock.patch('pgpasslib._read_file') as read_file:
             read_file.return_value = MOCK_CONTENT
-            self.assertIsNone(pgpasslib.getpass('fail', '5432', 'foo', 'bar'))
+            self.assertRaises(pgpasslib.NoMatchingEntry,
+                              lambda: pgpasslib.getpass('fail', '5432', 'foo',
+                                                        'bar'))
+
+
+class NoMatchingEntryStrFormatting(unittest.TestCase):
+    def test_str_matches_expectation(self):
+        msg = "host=fail; port=5432; dbname=foo; user=bar"
+        self.assertEqual(str(pgpasslib.NoMatchingEntry(msg)),
+                         'No match for connection entry "%s"' % msg)
 
 
 class FileNotFoundStrFormatting(unittest.TestCase):
