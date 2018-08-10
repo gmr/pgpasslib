@@ -70,12 +70,15 @@ def getpass(host=DEFAULT_HOST, port=DEFAULT_PORT, dbname=DEFAULT_DBNAME,
     :raises: InvalidEntry
 
     """
+
     if not isinstance(port, int):
         port = int(port)
     for entry in _get_entries():
         if entry.match(host, port, dbname, user):
             return entry.password
-    return None
+
+    raise NoMatchingEntry("host=%s; port=%i; dbname=%s; user=%s"
+                          % (host, port, dbname, user))
 
 
 class PgPassException(Exception):
@@ -92,6 +95,14 @@ class FileNotFound(PgPassException):
 
     """
     MESSAGE = 'No such file "{0}"'
+
+
+class NoMatchingEntry(PgPassException):
+    """Raised when the password file doesn't contain a match for the specified
+    connection parameters.
+
+    """
+    MESSAGE = 'No match for connection entry "{0}"'
 
 
 class InvalidEntry(PgPassException):
