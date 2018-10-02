@@ -2,7 +2,10 @@
 Tests for pgpasslib
 
 """
-import mock
+try:
+    import mock
+except ImportError:
+    from unittest import mock
 import os
 from os import path
 import stat
@@ -268,3 +271,40 @@ class InvalidPermissionsExceptionStrFormatting(unittest.TestCase):
     def test_str_matches_expectation(self):
         self.assertEqual(str(pgpasslib.InvalidPermissions('foo', '0x000')),
                          'Invalid Permissions for foo: 0x000')
+
+
+class GetConnectionStringMatch1Test(unittest.TestCase):
+
+    def test_getconnectionstring_returns_expected_result(self):
+        with mock.patch('pgpasslib._read_file') as read_file:
+            read_file.return_value = MOCK_CONTENT
+            self.assertEqual(pgpasslib.getconnectionstring('localhost', 5432,
+                                               'foo', 'kermit'), '')
+
+
+class GetConnectionStringMatch2Test(unittest.TestCase):
+
+    def test_getconnectionstring_returns_expected_result(self):
+        with mock.patch('pgpasslib._read_file') as read_file:
+            read_file.return_value = MOCK_CONTENT
+            self.assertEqual(pgpasslib.getconnectionstring('bouncer', 6000,
+                'bumpers', 'rubber'), 'postgresql://rubber:buggy@bouncer:6000/bumpers')
+
+
+class GetConnectionStringMatch3Test(unittest.TestCase):
+
+    def test_getconnectionstring_returns_expected_result(self):
+        with mock.patch('pgpasslib._read_file') as read_file:
+            read_file.return_value = MOCK_CONTENT
+            self.assertEqual(pgpasslib.getconnectionstring('foo.abjdite.us-east-1.'
+                                               'redshift.amazonaws.com', 5439,
+                                               'redshift', 'fonzy'), 'postgresql://fonzy:b3ar@foo.abjdite.us-east-1.redshift.amazonaws.com:5439/redshift')
+
+
+class GetConnectionStringMatch4Test(unittest.TestCase):
+
+    def test_getconnectionstring_returns_expected_result(self):
+        with mock.patch('pgpasslib._read_file') as read_file:
+            read_file.return_value = MOCK_CONTENT
+            self.assertEqual(pgpasslib.getconnectionstring('foo:bar', '6000',
+                'corgie', 'baz'), 'postgresql://baz:qux@foo:bar:6000/corgie')
