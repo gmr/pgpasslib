@@ -99,18 +99,21 @@ def getconnectionstring(
     :raises: InvalidEntry
 
     """
-    return 'postgresql://{user}:{password}@{host}:{port}/{dbname}'.format(
+    password=getpass(
         host=host,
         port=port,
         dbname=dbname,
         user=user,
-        password=getpass(
+    )
+    if password:
+        return 'postgresql://{user}:{password}@{host}:{port}/{dbname}'.format(
             host=host,
             port=port,
             dbname=dbname,
             user=user,
+            password=password
         )
-    )
+    return ''
 
 
 class PgPassException(Exception):
