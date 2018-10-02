@@ -26,7 +26,7 @@ import stat
 import sys
 import platform
 
-__version__ = '1.1.0'
+__version__ = '1.1.1'
 
 LOGGER = logging.getLogger(__name__)
 
@@ -76,6 +76,41 @@ def getpass(host=DEFAULT_HOST, port=DEFAULT_PORT, dbname=DEFAULT_DBNAME,
         if entry.match(host, port, dbname, user):
             return entry.password
     return None
+
+
+def getconnectionstring(
+    host=DEFAULT_HOST,
+    port=DEFAULT_PORT,
+    dbname=DEFAULT_DBNAME,
+    user=DEFAULT_USER,
+):
+    """Return the connection string for the specified host, port, dbname and user.
+    :py:const:`None` will be returned if a password can not be found for the
+    specified connection parameters.
+
+    :param str host: PostgreSQL hostname
+    :param port: PostgreSQL port
+    :type port: int or str
+    :param str dbname: Database name
+    :param str user: Database role/user
+    :rtype: str
+    :raises: FileNotFound
+    :raises: InvalidPermissions
+    :raises: InvalidEntry
+
+    """
+    return 'postgresql://{user}:{password}@{host}:{port}/{dbname}'.format(
+        host=host,
+        port=port,
+        dbname=dbname,
+        user=user,
+        password=getpass(
+            host=host,
+            port=port,
+            dbname=dbname,
+            user=user,
+        )
+    )
 
 
 class PgPassException(Exception):
