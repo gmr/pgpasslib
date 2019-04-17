@@ -248,6 +248,50 @@ class GetPassNoMatchTest(unittest.TestCase):
             read_file.return_value = MOCK_CONTENT
             self.assertIsNone(pgpasslib.getpass('fail', '5432', 'foo', 'bar'))
 
+class GetUserMatch1Test(unittest.TestCase):
+
+    def test_getuser_returns_expected_result(self):
+        with mock.patch('pgpasslib._read_file') as read_file:
+            read_file.return_value = MOCK_CONTENT
+            self.assertEqual(pgpasslib.getuser('localhost', 5432,
+                                               'foo'), 'kermit')
+
+
+class GetUserMatch2Test(unittest.TestCase):
+
+    def test_getuser_returns_expected_result(self):
+        with mock.patch('pgpasslib._read_file') as read_file:
+            read_file.return_value = MOCK_CONTENT
+            self.assertEqual(pgpasslib.getuser('bouncer', 6000,
+                                               'bumpers'), 'rubber')
+
+
+class GetUserMatch3Test(unittest.TestCase):
+
+    def test_getuser_returns_expected_result(self):
+        with mock.patch('pgpasslib._read_file') as read_file:
+            read_file.return_value = MOCK_CONTENT
+            self.assertEqual(pgpasslib.getuser('foo.abjdite.us-east-1.'
+                                               'redshift.amazonaws.com', 5439,
+                                               'redshift'), 'fonzy')
+
+
+class GetUserMatch4Test(unittest.TestCase):
+
+    def test_getuser_returns_expected_result(self):
+        with mock.patch('pgpasslib._read_file') as read_file:
+            read_file.return_value = MOCK_CONTENT
+            self.assertEqual(pgpasslib.getuser('foo:bar', '6000',
+                                               'corgie'), 'baz')
+
+
+class GetUserNoMatchTest(unittest.TestCase):
+
+    def test_getuser_returns_expected_result(self):
+        with mock.patch('pgpasslib._read_file') as read_file:
+            read_file.return_value = MOCK_CONTENT
+            self.assertIsNone(pgpasslib.getuser('fail', '5432', 'foo'))
+
 
 class FileNotFoundStrFormatting(unittest.TestCase):
 

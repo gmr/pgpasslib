@@ -42,6 +42,37 @@ DEFAULT_DBNAME = DEFAULT_USER
 
 PATTERN = re.compile(r'^(.*):(.*):(.*):(.*):(.*)$', re.MULTILINE)
 
+def getuser(host=DEFAULT_HOST, port=DEFAULT_PORT, dbname=DEFAULT_DBNAME):
+    """Return the first matching user for the specified host, port, and dbname.
+    :py:const:`None` will be returned if a user can not be found for the
+    specified connection parameters.
+
+    If the password file can not be located, a :py:class:`FileNotFound`
+    exception will be raised.
+
+    If the password file is group or world readable, the file will not be read,
+    per the specification, and a :py:class:`InvalidPermissions` exception will
+    be raised.
+
+    If an entry in the password file is not parsable, a
+    :py:class:`InvalidPermissions` exception will be raised.
+
+    :param str host: PostgreSQL hostname
+    :param port: PostgreSQL port
+    :type port: int or str
+    :param str dbname: Database name
+    :rtype: str
+    :raises: FileNotFound
+    :raises: InvalidPermissions
+    :raises: InvalidEntry
+
+    """
+    if not isinstance(port, int):
+        port = int(port)
+    for entry in _get_entries():
+        if entry.match(host, port, dbname, None):
+            return entry.user
+    return None
 
 def getpass(host=DEFAULT_HOST, port=DEFAULT_PORT, dbname=DEFAULT_DBNAME,
             user=DEFAULT_USER):
@@ -147,7 +178,7 @@ class _Entry(object):
         return all([any([self.host == '*', self.host == host]),
                     any([self.port == '*', self.port == port]),
                     any([self.dbname == '*', self.dbname == dbname]),
-                    any([self.user == '*', self.user == user])])
+                    any([user is None and self.user != '*', self.user == '*', self.user == user])])
 
     @staticmethod
     def _sanitize_port(value):
