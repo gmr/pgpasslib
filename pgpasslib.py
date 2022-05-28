@@ -38,13 +38,11 @@ if PYTHON3:  # pragma: no cover
 DEFAULT_HOST = 'localhost'
 DEFAULT_PORT = 5432
 DEFAULT_USER = stdlib_getpass.getuser()
-DEFAULT_DBNAME = DEFAULT_USER
 
 PATTERN = re.compile(r'^(.*):(.*):(.*):(.*):(.*)$', re.MULTILINE)
 
 
-def getpass(host=DEFAULT_HOST, port=DEFAULT_PORT, dbname=DEFAULT_DBNAME,
-            user=DEFAULT_USER):
+def getpass(host, port, dbname, user):
     """Return the password for the specified host, port, dbname and user.
     :py:const:`None` will be returned if a password can not be found for the
     specified  connection parameters.
@@ -70,6 +68,19 @@ def getpass(host=DEFAULT_HOST, port=DEFAULT_PORT, dbname=DEFAULT_DBNAME,
     :raises: InvalidEntry
 
     """
+
+    if not host:
+        host = DEFAULT_HOST
+
+    if not port:
+        port = DEFAULT_PORT
+
+    if not user:
+        user = DEFAULT_USER
+
+    if not dbname:
+        dbname = user
+
     if not isinstance(port, int):
         port = int(port)
     for entry in _get_entries():
