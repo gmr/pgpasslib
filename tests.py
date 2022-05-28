@@ -204,6 +204,18 @@ class EntryAllWildcardsButUserMatchTest(unittest.TestCase):
         self.assertFalse(self.entry.match('foo', 6000, 'bar', 'qux'))
 
 
+class GetpassDefaultsTest(unittest.TestCase):
+
+    def setUp(self):
+        self.entry = pgpasslib._Entry('localhost', 5432, '*', 'mydb', 'mypass')
+
+    def test_match_on_port_none(self):
+        self.assertTrue(self.entry.match('localhost', None, 'mydb', 'mydb'))
+
+    def test_match_on_default_db(self):
+        self.assertTrue(self.entry.match('localhost', None, None, 'mydb'))
+
+
 class GetPassMatch1Test(unittest.TestCase):
 
     def test_getpass_returns_expected_result(self):
